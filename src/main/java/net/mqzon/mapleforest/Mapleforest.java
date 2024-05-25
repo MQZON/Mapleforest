@@ -12,11 +12,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.mqzon.mapleforest.worldgen.biome.TestRegion1;
-import net.mqzon.mapleforest.worldgen.biome.TestSurfaceRuleData;
+import net.mqzon.mapleforest.worldgen.biome.MapleForestRegion;
 import org.slf4j.Logger;
 import terrablender.api.Regions;
-import terrablender.api.SurfaceRuleManager;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mapleforest.MOD_ID)
@@ -41,14 +39,8 @@ public class Mapleforest
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(() -> {
-            Regions.register(new TestRegion1(new ResourceLocation(MOD_ID, "overworld_1"), 5));
-            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MOD_ID, TestSurfaceRuleData.makeRules());
+            Regions.register(new MapleForestRegion(new ResourceLocation(MOD_ID, "maple_forest_region"), 5));
         });
-    }
-
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

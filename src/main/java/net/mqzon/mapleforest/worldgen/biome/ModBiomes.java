@@ -23,9 +23,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.mqzon.mapleforest.Mapleforest;
 
-public class TestBiomes
+public class ModBiomes
 {
-    public static final ResourceKey<Biome> COLD_BLUE = register("cold_blue");
+    public static final ResourceKey<Biome> MAPLE_FOREST = register("maple_forest");
 
     private static ResourceKey<Biome> register(String name)
     {
