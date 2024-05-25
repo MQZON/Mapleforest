@@ -1,6 +1,7 @@
 package net.mqzon.mapleforest;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -11,7 +12,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.mqzon.mapleforest.worldgen.biome.TestRegion1;
+import net.mqzon.mapleforest.worldgen.biome.TestSurfaceRuleData;
 import org.slf4j.Logger;
+import terrablender.api.Regions;
+import terrablender.api.SurfaceRuleManager;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mapleforest.MOD_ID)
@@ -31,13 +36,14 @@ public class Mapleforest
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
+        event.enqueueWork(() -> {
+            Regions.register(new TestRegion1(new ResourceLocation(MOD_ID, "overworld_1"), 5));
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MOD_ID, TestSurfaceRuleData.makeRules());
+        });
     }
 
     // Add the example block item to the building blocks tab
