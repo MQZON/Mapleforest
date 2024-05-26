@@ -1,17 +1,24 @@
 package net.mqzon.mapleforest.worldgen;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PinkPetalsBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.BeehiveDecorator;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.mqzon.mapleforest.Mapleforest;
@@ -23,8 +30,7 @@ import java.util.List;
 public class ModConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?,?>> TREES_MAPLE = registerKey("trees_maple");
     public static void bootstrap(BootstapContext<ConfiguredFeature<?,?>> context) {
-        register(context, TREES_MAPLE, Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(
-           HolderSet.direct(PlacementUtils.inlinePlaced(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+        TreeConfiguration MAPLE = new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(ModBlocks.MAPLE_LOG.get()),
                 new StraightTrunkPlacer(7,2,0),
                 BlockStateProvider.simple(ModBlocks.MAPLE_LEAVES.get()),
@@ -34,10 +40,9 @@ public class ModConfiguredFeatures {
                         ConstantInt.of(7), //height
                         0.75F, 0.75F),
                 new TwoLayersFeatureSize(1, 0, 2))
-                .decorators(List.of(new BeehiveDecorator(0.05F))).build()
+                .decorators(List.of(new BeehiveDecorator(0.05F))).build();
 
-           ),
-                   PlacementUtils.inlinePlaced(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+        TreeConfiguration RED_MAPLE = new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(ModBlocks.MAPLE_LOG.get()),
                 new StraightTrunkPlacer(7,2,0),
                 BlockStateProvider.simple(ModBlocks.RED_MAPLE_LEAVES.get()),
@@ -47,8 +52,14 @@ public class ModConfiguredFeatures {
                         ConstantInt.of(7), //height
                         0.75F, 0.75F),
                 new TwoLayersFeatureSize(1, 0, 2))
-                .decorators(List.of(new BeehiveDecorator(0.05F))).build())
-                   ))
+                .decorators(List.of(new BeehiveDecorator(0.05F))).build();
+
+
+        register(context, TREES_MAPLE, Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfiguration(
+                HolderSet.direct(
+                   PlacementUtils.inlinePlaced(Feature.TREE, MAPLE),
+                   PlacementUtils.inlinePlaced(Feature.TREE, RED_MAPLE))
+                )
         );
     }
 
