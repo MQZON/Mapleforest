@@ -1,17 +1,13 @@
 package net.mqzon.mapleforest.worldgen;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.PinkPetalsBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -27,8 +23,11 @@ import net.mqzon.mapletree.worldgen.foliage.custom.MapleFoliagePlacer;
 
 import java.util.List;
 
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.LAYERS;
+
 public class ModConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?,?>> TREES_MAPLE = registerKey("trees_maple");
+    public static final ResourceKey<ConfiguredFeature<?,?>> MAPLE_LEAF_PILE = registerKey("maple_leaf_pile");
     public static void bootstrap(BootstapContext<ConfiguredFeature<?,?>> context) {
         TreeConfiguration MAPLE = new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(ModBlocks.MAPLE_LOG.get()),
@@ -61,6 +60,16 @@ public class ModConfiguredFeatures {
                    PlacementUtils.inlinePlaced(Feature.TREE, RED_MAPLE))
                 )
         );
+
+        SimpleWeightedRandomList.Builder<BlockState> pileBuilder = SimpleWeightedRandomList.builder();
+
+        for(int i = 1; i <= 3; ++i) {
+            pileBuilder.add(ModBlocks.MAPLE_LEAF_PILE.get().defaultBlockState().setValue(LAYERS, Integer.valueOf(i)),1);
+            pileBuilder.add(ModBlocks.RED_MAPLE_LEAF_PILE.get().defaultBlockState().setValue(LAYERS, Integer.valueOf(i)),1);
+        }
+
+        register(context, MAPLE_LEAF_PILE, Feature.FLOWER, new RandomPatchConfiguration(72, 6, 2,
+                PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK, new SimpleBlockConfiguration(new WeightedStateProvider(pileBuilder)))));
     }
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
